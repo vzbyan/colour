@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Fullscreen Color</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            transition: background-color 0.5s; /* Smooth fade between colors */
+        }
+    </style>
+</head>
+<body>
+<script>
+    const colors = ['red', 'white', 'yellow', 'green'];
+
+    function changeColorRandomly() {
+        // Pick a random color
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        document.body.style.backgroundColor = randomColor;
+
+        // Pick a random interval between 0.5s (500ms) and 3s (3000ms)
+        const randomInterval = 500 + Math.random() * 2500;
+
+        // Call this function again after the random interval
+        setTimeout(changeColorRandomly, randomInterval);
+    }
+
+    // Start the first change
+    changeColorRandomly();
+</script>
+</body>
+</html>
