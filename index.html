@@ -2,35 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Random Fullscreen Colour</title>
+    <title>Random Fullscreen Color</title>
     <style>
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            transition: background-color 0.5s; /* Smooth fade between colors */
+            transition: background-color 0.5s;
         }
     </style>
 </head>
 <body>
+
 <script>
-    const colors = ['red', 'white', 'yellow', 'green'];
+// ------------------------------
+//      RANDOM COLOR LOGIC
+// ------------------------------
+const colors = ['red', 'white', 'yellow', 'green'];
 
-    function changeColorRandomly() {
-        // Pick a random color
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        document.body.style.backgroundColor = randomColor;
+function changeColorRandomly() {
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    document.body.style.backgroundColor = randomColor;
 
-        // Pick a random interval between 0.5s (500ms) and 3s (3000ms)
-        const randomInterval = 500 + Math.random() * 2500;
+    // Random interval: 1.0s to 2.5s (1000ms to 2500ms)
+    const randomInterval = 1000 + Math.random() * 1500;
+    setTimeout(changeColorRandomly, randomInterval);
+}
 
-        // Call this function again after the random interval
-        setTimeout(changeColorRandomly, randomInterval);
+changeColorRandomly();
+
+
+// ------------------------------
+//          WAKE LOCK
+// ------------------------------
+let wakeLock = null;
+
+async function requestWakeLock() {
+    try {
+        wakeLock = await navigator.wakeLock.request("screen");
+        console.log("Wake Lock Active");
+
+        wakeLock.addEventListener("release", () => {
+            console.log("Wake Lock Released");
+        });
+
+    } catch (err) {
+        console.log("Wake Lock Error:", err);
     }
+}
 
-    // Start the first change
-    changeColorRandomly();
+// Re-acquire wake lock when visibility returns
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        requestWakeLock();
+    }
+});
+
+// iOS requires a user gesture: request wake lock on first tap
+window.addEventListener("click", () => {
+    requestWakeLock();
+}, { once: true });
+
 </script>
+
 </body>
 </html>
